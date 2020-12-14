@@ -7,10 +7,7 @@ exports.getArticles = async (req, resp, next) => {
   const tags_exclude = req.query.tags_exclude;
   const condition = {};
   if (tags) condition.tags = { $all: tags.split(",") };
-  if (tags_exclude)
-    condition.tags = { $nin: tags_exclude.split(",") };
-    console.log(condition);
-
+  if (tags_exclude) condition.tags = { $nin: tags_exclude.split(",") };
   try {
     const totalArticles = await Article.find(condition).countDocuments();
     const articles = await Article.find(condition)
@@ -27,6 +24,7 @@ exports.postArticles = async (req, resp, next) => {
     title: req.body.title,
     published: req.body.published,
     tags: req.body.tags,
+    description: req.body.description,
     series: req.body.series,
     body_markdown: req.body.body_markdown,
   });

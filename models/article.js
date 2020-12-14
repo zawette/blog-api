@@ -5,6 +5,7 @@ const articleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: String,
   published: {
     type: Boolean,
     required: true,
