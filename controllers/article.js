@@ -1,4 +1,5 @@
 const Article = require("../models/article");
+const { validationResult } = require("express-validator");
 
 exports.getArticles = async (req, resp, next) => {
   const perPage = Number.parseInt(req.query.per_page) || 30;
@@ -15,11 +16,19 @@ exports.getArticles = async (req, resp, next) => {
       .limit(perPage);
     resp.status(200).json({ totalArticles: totalArticles, articles: articles });
   } catch (err) {
-    console.log(err);
+    err.statusCode = err.statusCode ? err.statusCode : 500;
     next(err);
   }
 };
 exports.postArticles = async (req, resp, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("validation failed");
+    error.statusCode = 422;
+    error.data = errors.array();
+    next(error);
+  }
+
   const article = new Article({
     title: req.body.title,
     published: req.body.published,
@@ -35,7 +44,7 @@ exports.postArticles = async (req, resp, next) => {
       article: article,
     });
   } catch (err) {
-    console.log(err);
+    err.statusCode = err.statusCode ? err.statusCode : 500;
     next(err);
   }
 };

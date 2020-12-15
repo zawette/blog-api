@@ -16,7 +16,13 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
 app.use("/api/articles", articleRoutes.router);
+
+app.use((error, req, res, next) => {
+  const { statusCode, message, data } = error;
+  res.status(statusCode).json({ message, data });
+});
 
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
