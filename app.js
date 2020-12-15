@@ -1,30 +1,17 @@
 const express = require("express");
-const articleRoutes = require("./routes/article");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const articleRoutes = require("./routes/article");
+const { cors, errorHandling } = require("./utils/middlewares");
 
 const app = express();
+const MONGODB_URI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
-
+app.use(cors);
 app.use("/api/articles", articleRoutes.router);
+app.use(errorHandling);
 
-app.use((error, req, res, next) => {
-  const { statusCode, message, data } = error;
-  res.status(statusCode).json({ message, data });
-});
-
-const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => {
