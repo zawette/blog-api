@@ -12,7 +12,7 @@ router.post(
   articleController.createArticle
 );
 router.put(
-  "/",
+  "/:articleId",
   [
     body("title").exists(),
     body("body_markdown").exists(),
