@@ -20,7 +20,7 @@ exports.getArticles = async (req, resp, next) => {
     next(err);
   }
 };
-exports.postArticles = async (req, resp, next) => {
+exports.createArticle = async (req, resp, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error("validation failed");
@@ -43,6 +43,36 @@ exports.postArticles = async (req, resp, next) => {
       message: "article created successfully!",
       article: article,
     });
+  } catch (err) {
+    err.statusCode = err.statusCode ? err.statusCode : 500;
+    next(err);
+  }
+};
+
+exports.updateArticle = async (req, resp, next) => {
+  const articleId = req.params.articleId;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("validation failed");
+    error.statusCode = 422;
+    error.data = errors.array();
+    next(error);
+  }
+
+  try {
+    const article = await Article.findById(articleId);
+    if (!article) {
+      const error = new Error("article not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    article.published = req.body.published;
+    article.title = req.body.title;
+    article.tags = req.body.tags;
+    article.description = req.body.description;
+    article.series = req.body.series;
+    article.body_markdown = req.body.body_markdown;
+    article.save();
   } catch (err) {
     err.statusCode = err.statusCode ? err.statusCode : 500;
     next(err);

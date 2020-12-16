@@ -9,7 +9,17 @@ router.post(
     body("body_markdown").exists(),
     body("published").isBoolean(),
   ],
-  articleController.postArticles
+  articleController.createArticle
 );
+router.put(
+  "/",
+  [
+    body("title").exists(),
+    body("body_markdown").exists(),
+    body("published").isBoolean(),
+  ],
+  articleController.updateArticle
+);
+
 
 exports.router = router;
