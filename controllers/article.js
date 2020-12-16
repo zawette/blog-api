@@ -73,6 +73,25 @@ exports.updateArticle = async (req, resp, next) => {
     article.series = req.body.series;
     article.body_markdown = req.body.body_markdown;
     article.save();
+    resp.status(200).json({
+      message: "article updated successfully!",
+      article: article,
+    });
+  } catch (err) {
+    err.statusCode = err.statusCode ? err.statusCode : 500;
+    next(err);
+  }
+};
+
+exports.getArticleById = async (req, resp, next) => {
+  try {
+    const article = await Article.findById(req.params.articleId);
+    if (!article) {
+      const error = new Error("Article not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    resp.status(200).json(article);
   } catch (err) {
     err.statusCode = err.statusCode ? err.statusCode : 500;
     next(err);

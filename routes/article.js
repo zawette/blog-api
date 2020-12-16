@@ -21,5 +21,6 @@ router.put(
   articleController.updateArticle
 );
 
+router.get("/:articleId", articleController.getArticleById);
 
 exports.router = router;
