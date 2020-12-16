@@ -9,7 +9,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
 app.use(cors);
-app.use("/api/articles", articleRoutes.router);
+app.use("/api/articles", articleRoutes);
 app.use(errorHandling);
 
 mongoose

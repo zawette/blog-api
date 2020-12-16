@@ -26,6 +26,6 @@ router.put(
 
 router.get("/:articleId", articleController.getArticleById);
 
-router.delete("/:articleId",articleController.deleteArticle)
+router.delete("/:articleId", articleController.deleteArticle);
 
-exports.router = router;
+module.exports = router;
