@@ -41,7 +41,7 @@ exports.createArticle = async (req, resp, next) => {
     await article.save();
     resp.status(201).json({
       message: "article created successfully!",
-      article: article,
+      article,
     });
   } catch (err) {
     err.statusCode = err.statusCode ? err.statusCode : 500;
@@ -75,7 +75,7 @@ exports.updateArticle = async (req, resp, next) => {
     article.save();
     resp.status(200).json({
       message: "article updated successfully!",
-      article: article,
+      article,
     });
   } catch (err) {
     err.statusCode = err.statusCode ? err.statusCode : 500;
@@ -92,6 +92,21 @@ exports.getArticleById = async (req, resp, next) => {
       throw error;
     }
     resp.status(200).json(article);
+  } catch (err) {
+    err.statusCode = err.statusCode ? err.statusCode : 500;
+    next(err);
+  }
+};
+
+exports.deleteArticle = async (req, resp, next) => {
+  try {
+    const article = await Article.findByIdAndDelete(req.params.articleId);
+    if (!article) {
+      const error = new Error("Article not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    resp.status(200).json({ message: "article deleted successfully", article });
   } catch (err) {
     err.statusCode = err.statusCode ? err.statusCode : 500;
     next(err);
